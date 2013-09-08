@@ -82,5 +82,3 @@ var jupimath = {
     }
 
 };
-
-jupimath.writeMathToId("divide", ["one", 3], "putTotalHere");
