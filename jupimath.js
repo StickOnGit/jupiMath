@@ -5,17 +5,19 @@ created Sept 7 2013 by Luke Sticka, on a whim, because reasons.
 
 */
 
-var jupimath = {
+//var jupimath = {
+
+var jupiGetter = {
 
     getValueById: function (elementID) {
         var targetID = document.getElementById(elementID);
         if (targetID === null) {
-            console.log(elementID + " wasn't a good ID. Your math might fail.");
+            console.log(elementID + " wasn't a good ID. Return value = 0");
             return 0;
         } else {
             var aNumber = Number(targetID.innerHTML);
             if (isNaN(aNumber)) {
-                console.log(elementID + " didn't have a real number. Check your math!");
+                console.log(elementID + " didn't have a real number. Return value = 0");
                 return 0;
             } else {
                 return aNumber;
@@ -26,11 +28,15 @@ var jupimath = {
     getManyValues: function (elementArray) {
         var valuesArray = [];
         elementArray.forEach(function (element) {
-            var newValue = jupimath.getValueById(element);
+            var newValue = jupiGetter.getValueById(element);
             valuesArray.push(newValue);
         });
         return valuesArray;
-    },
+    }
+
+};
+
+var jupiBaseMath = {
 
     add: function (arrayOfValues) {
         var sum = arrayOfValues.shift();
@@ -64,21 +70,27 @@ var jupimath = {
         return quotient;
     },
 
-    writeTotalToElementById: function (elementID, total) {
+    doMathByIds: function (mathType, elementArray) {
+        var mathCheck = typeof jupiBaseMath[mathType];
+        if (mathCheck === "function" && mathType !== "doMathByIds") {
+            return jupiBaseMath[mathType](jupiGetter.getManyValues(elementArray));
+        } else {
+            console.log("I can't do that kind of math!");
+            //return false;
+        }
+    }
+};
+
+var jupiWrite = {
+
+    writeTotalToId: function (elementID, total) {
         document.getElementById(elementID).innerHTML = total;
     },
 
-    simpleMathByIds: function (mathType, elementArray) {
-        if (typeof jupimath[mathType] === "function") {
-            return jupimath[mathType](jupimath.getManyValues(elementArray));
-        } else {
-            console.log("I can't do that kind of math!");
-        }
-    },
-
     writeMathToId: function (mathType, elementArray, targetElement) {
-        var answer = jupimath.simpleMathByIds(mathType, elementArray);
-        jupimath.writeTotalToElementById(targetElement, answer);
+        var answer = jupiBaseMath.doMathByIds(mathType, elementArray);
+        jupiWrite.writeTotalToId(targetElement, answer);
     }
 
 };
+
